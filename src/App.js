@@ -5,25 +5,47 @@ import { Bloges } from './component/bloges';
 import { useContext } from 'react';
 import { AppContext } from './context/Appcontext';
 import { useEffect } from 'react';
+import { Route, Routes, useLocation, useSearchParams } from 'react-router-dom';
 
 function App() {
-  const {fetchBlogesPosts} = useContext(AppContext)
+  const {fetchBlogesPosts} = useContext(AppContext);
+
+  const [searchParams , setsearchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect( () =>{
-    fetchBlogesPosts();
-  },[])
+    const page = searchParams.get("page" || 1);
+
+    if(location.pathname.includes("tags")){
+      const tag = location.pathname.split("/").at(-1).replaceAll("-","");
+      fetchBlogesPosts(Number(page), (tag));
+    }
+
+    else if (location.pathname.includes("category")){
+      const category = location.pathname.split("/").at(-1).replaceAll("-","");
+      fetchBlogesPosts(Number(page), null , (category));
+
+    }
+    else{
+      fetchBlogesPosts(Number(page));
+    }
+     
+
+  },[location.pathname, location.search]);
   return (
-  <div className="min-h-screen flex flex-col">
 
-    <Header />
+  <Routes>
 
-    <main className="flex-1 pt-12 pb-12">
-      <Bloges />
-    </main>
+    <Route path="/" element= {<Home/>}/>
 
-    <Pagination className='min-h-screen'/>
+    <Route path='/blogs' element = {<BlogPages/>} />
 
-  </div>
+    <Route path='/tags/:tag' element={<TagPage/>} />
+
+    <Route path='/categories/:category' element={<CategoryPage/>} />
+
+  </Routes>
+
 )};
 
 export default App;

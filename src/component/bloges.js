@@ -10,7 +10,7 @@ export const Bloges = () => {
     <div className=' flex flex-col gap-y-5 mx-auto w-[56.8%] mt-5'>
 
       {loading ? (<Spiner/>) : (
-        posts.length===0 ? <p>No post found</p> : posts.map( (post) => (
+        posts.length===0  ? <p>No post found</p> : posts.map( (post) => (
           <div key={post.id}>
             <p className=' text-[20px] font-bold'>{post.title}</p>
             <p>

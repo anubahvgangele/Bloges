@@ -14,21 +14,28 @@ export function AppContextProvider({children}){
 
     const [totalPage,setTotalPage] = useState(null);
 
-    useEffect(() =>{
-        
-    })
+    
 
-    async function fetchBlogesPosts(page = 1) {
+    async function fetchBlogesPosts(page = 1, tag=null , category) {
+
         setLoading(true);
-      
+
+        let url =  `${baseUrl}?page=${page}`;
+        
+        if(tag)
+            url += `&tag=${tag}`;
+
+        if(category)
+            category  += `category = ${category}`
+        
         try{
-            const url =  await fetch(`${baseUrl}?page=${page}`);
 
-            const data = await url.json();
+            const res = await fetch(url);
+            const data = await res.json();
 
-            console.log(data);
-
-
+            if(!data.posts || data.posts.length === 0)
+                console.log("Posts not found")
+            
             setPosts(data.posts);
 
             setPage(data.page);
