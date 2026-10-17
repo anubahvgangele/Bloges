@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { baseUrl } from "../baseurl";
 import { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const AppContext = createContext();
 
@@ -14,6 +15,8 @@ export function AppContextProvider({children}){
 
     const [totalPage,setTotalPage] = useState(null);
 
+    const navigate = useNavigate();
+
     
 
     async function fetchBlogesPosts(page = 1, tag=null , category) {
@@ -26,7 +29,7 @@ export function AppContextProvider({children}){
             url += `&tag=${tag}`;
 
         if(category)
-            category  += `category = ${category}`
+            category  += `&category=${category}`
         
         try{
 
@@ -52,11 +55,13 @@ export function AppContextProvider({children}){
             
             setTotalPage(null);
         }
+        
         finally{
-
+             
             setLoading(false);
 
         }
+
     }
 
    
@@ -74,10 +79,11 @@ export function AppContextProvider({children}){
         changePage
     };
     function changePage(page){
+        
+        navigate({search:`?page=${page}`});
 
         setPage(page);
 
-        fetchBlogesPosts(page);
 
     }
 
